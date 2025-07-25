@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's quote </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 50%, #dee2e6 100%);
+            min-height: 100vh;
+            color: #212529;
+            overflow-x: hidden;
+            position: relative;
+            animation: bodyLoad 1s ease-out;
+        }
+
+        /* Animated background pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(0,0,0,0.02) 1px, transparent 1px),
+                radial-gradient(circle at 80% 80%, rgba(0,0,0,0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: backgroundDrift 25s linear infinite;
+            z-index: -2;
+        }
+
+        /* Floating particles */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(108, 117, 125, 0.05) 2px, transparent 2px),
+                radial-gradient(circle at 90% 90%, rgba(52, 58, 64, 0.03) 1px, transparent 1px),
+                radial-gradient(circle at 50% 50%, rgba(73, 80, 87, 0.04) 1.5px, transparent 1.5px);
+            background-size: 80px 80px, 120px 120px, 100px 100px;
+            animation: particleDance 30s linear infinite;
+            z-index: -1;
+        }
+
+        center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            animation: centerSlideIn 1.2s ease-out;
+        }
+
+        form {
+            background: #ffffff;
+            border-radius: 25px;
+            padding: 4rem 3rem;
+            box-shadow: 
+                0 25px 50px rgba(0,0,0,0.12),
+                0 15px 30px rgba(0,0,0,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.8);
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            animation: formAppear 1.5s ease-out 0.3s both;
+            border: 1px solid rgba(255,255,255,0.9);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        form:hover {
+            transform: translateY(-15px) rotateX(5deg);
+            box-shadow: 
+                0 35px 70px rgba(0,0,0,0.18),
+                0 20px 40px rgba(0,0,0,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+
+        /* Animated border effects */
+        form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #343a40, #6c757d, #868e96, #6c757d, #343a40);
+            background-size: 300% 100%;
+            border-radius: 25px 25px 0 0;
+            animation: borderFlow 4s ease-in-out infinite;
+        }
+
+        form::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, 
+                transparent, 
+                rgba(52, 58, 64, 0.1), 
+                transparent, 
+                rgba(108, 117, 125, 0.08), 
+                transparent
+            );
+            background-size: 400% 400%;
+            border-radius: 28px;
+            z-index: -1;
+            animation: glowPulse 6s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #212529;
+            margin-bottom: 2.5rem;
+            line-height: 1.2;
+            animation: textFloat 4s ease-in-out infinite, textShimmer 5s ease-in-out infinite;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: -0.5px;
+        }
+
+        /* Quote decorations */
+        h1::before {
+            content: '"';
+            position: absolute;
+            top: -25px;
+            left: -40px;
+            font-size: 5rem;
+            color: #6c757d;
+            opacity: 0.2;
+            animation: quoteSwing 3s ease-in-out infinite;
+            font-family: Georgia, serif;
+        }
+
+        h1::after {
+            content: '"';
+            position: absolute;
+            bottom: -15px;
+            right: -40px;
+            font-size: 5rem;
+            color: #6c757d;
+            opacity: 0.2;
+            animation: quoteSwing 3s ease-in-out infinite 1.5s;
+            font-family: Georgia, serif;
+        }
+
+        /* Animated underline */
+        h1 > span::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #6c757d, transparent);
+            animation: underlineGrow 2s ease-out 1s both, underlineBreath 4s ease-in-out 3s infinite;
+        }
+
+        br {
+            display: block;
+            margin: 1.5rem 0;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(135deg, #343a40 0%, #6c757d 50%, #495057 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 8px 25px rgba(52, 58, 64, 0.3),
+                0 4px 12px rgba(52, 58, 64, 0.2),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+            animation: buttonBreath 3s ease-in-out infinite;
+        }
+
+        input[type="submit"]:hover {
+            transform: translateY(-5px) scale(1.08);
+            box-shadow: 
+                0 15px 40px rgba(52, 58, 64, 0.4),
+                0 8px 20px rgba(52, 58, 64, 0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            background: linear-gradient(135deg, #495057 0%, #868e96 50%, #6c757d 100%);
+        }
+
+        input[type="submit"]:active {
+            transform: translateY(-2px) scale(1.05);
+            animation: buttonPulse 0.3s ease-out;
+        }
+
+        /* Shimmer effect on button */
+        input[type="submit"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255,255,255,0.3), 
+                rgba(255,255,255,0.5), 
+                rgba(255,255,255,0.3), 
+                transparent
+            );
+            transition: left 0.8s ease;
+        }
+
+        input[type="submit"]:hover::before {
+            left: 100%;
+        }
+
+        /* Floating geometric shapes */
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.08;
+            animation: floatUp 20s infinite linear;
+        }
+
+        .shape.circle {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #6c757d;
+            animation-duration: 25s;
+        }
+
+        .shape.square {
+            width: 15px;
+            height: 15px;
+            background: #343a40;
+            transform: rotate(45deg);
+            animation-duration: 30s;
+        }
+
+        .shape.triangle {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 17px solid #495057;
+            animation-duration: 22s;
+        }
+
+        .shape:nth-child(1) { top: 100%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { top: 100%; left: 25%; animation-delay: -5s; }
+        .shape:nth-child(3) { top: 100%; left: 40%; animation-delay: -10s; }
+        .shape:nth-child(4) { top: 100%; left: 55%; animation-delay: -15s; }
+        .shape:nth-child(5) { top: 100%; left: 70%; animation-delay: -20s; }
+        .shape:nth-child(6) { top: 100%; left: 85%; animation-delay: -25s; }
+
+        /* Keyframe Animations */
+        @keyframes bodyLoad {
+            0% { opacity: 0; background-position: 0% 0%; }
+            100% { opacity: 1; background-position: 100% 100%; }
+        }
+
+        @keyframes backgroundDrift {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        @keyframes particleDance {
+            0% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+            33% { background-position: 50% 25%, 75% 25%, 100% 0%; }
+            66% { background-position: 100% 50%, 25% 75%, 0% 100%; }
+            100% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+        }
+
+        @keyframes centerSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes formAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(0.9) rotateX(20deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateX(0deg);
+            }
+        }
+
+        @keyframes borderFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { 
+                background-position: 0% 0%;
+                opacity: 0.5;
+            }
+            50% { 
+                background-position: 100% 100%;
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes textFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-8px) scale(1.02); }
+        }
+
+        @keyframes textShimmer {
+            0%, 100% { 
+                color: #212529;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            25% { 
+                color: #343a40;
+                text-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+            50% { 
+                color: #495057;
+                text-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            }
+            75% { 
+                color: #343a40;
+                text-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+        }
+
+        @keyframes quoteSwing {
+            0%, 100% { 
+                transform: rotate(0deg) scale(1);
+                opacity: 0.2;
+            }
+            50% { 
+                transform: rotate(5deg) scale(1.1);
+                opacity: 0.3;
+            }
+        }
+
+        @keyframes underlineGrow {
+            0% { width: 0; }
+            100% { width: 120px; }
+        }
+
+        @keyframes underlineBreath {
+            0%, 100% { 
+                width: 120px;
+                background: linear-gradient(90deg, transparent, #6c757d, transparent);
+            }
+            50% { 
+                width: 160px;
+                background: linear-gradient(90deg, transparent, #343a40, transparent);
+            }
+        }
+
+        @keyframes buttonBreath {
+            0%, 100% { 
+                box-shadow: 
+                    0 8px 25px rgba(52, 58, 64, 0.3),
+                    0 4px 12px rgba(52, 58, 64, 0.2);
+            }
+            50% { 
+                box-shadow: 
+                    0 12px 35px rgba(52, 58, 64, 0.4),
+                    0 6px 18px rgba(52, 58, 64, 0.3);
+            }
+        }
+
+        @keyframes buttonPulse {
+            0% { transform: translateY(-2px) scale(1.05); }
+            50% { transform: translateY(-4px) scale(1.08); }
+            100% { transform: translateY(-2px) scale(1.05); }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.08;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 0.08;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            center {
+                padding: 15px;
+            }
+
+            form {
+                padding: 3rem 2rem;
+                border-radius: 20px;
+                margin: 0 10px;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            h1::before, h1::after {
+                font-size: 3.5rem;
+            }
+
+            input[type="submit"] {
+                padding: 16px 35px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            form {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h1::before {
+                left: -25px;
+                top: -20px;
+            }
+
+            h1::after {
+                right: -25px;
+            }
+
+            input[type="submit"] {
+                padding: 14px 30px;
+                font-size: 0.9rem;
+                letter-spacing: 1px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="floating-shapes">
+        <div class="shape circle"></div>
+        <div class="shape square"></div>
+        <div class="shape triangle"></div>
+        <div class="shape circle"></div>
+        <div class="shape square"></div>
+        <div class="shape triangle"></div>
+    </div>
+
+    <center>
+        <form method="get">
+            <h1><span>{{result}}</span></h1>
+            <br>
+            <input type="submit" value="Generate ">
+        </form>
+    </center>
+    
+</body>
+</html>
